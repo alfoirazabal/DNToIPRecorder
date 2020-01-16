@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:title="Run And Schedule Now">
+
+        <menu>
+
+            <item
+                android:id="@+id/run_and_schedule_15mins"
+                android:title="Run and Schedule for every 15 minutes" />
+            <item
+                android:id="@+id/run_and_schedule_30mins"
+                android:title="Run and Schedule for every 30 minutes" />
+            <item
+                android:id="@+id/run_and_schedule_1hour"
+                android:title="Run and Schedule for every 1 hour" />
+            <item
+                android:id="@+id/run_and_schedule_12hours"
+                android:title="Run and Schedule for every 12 hours" />
+            <item
+                android:id="@+id/run_and_schedule_1day"
+                android:title="Run and Schedule for every 1 day" />
+
+        </menu>
+
+    </item>
+    <item
+        android:id="@+id/job_unschedule"
+        android:title="Unschedule Job" />
+    <item
+        android:id="@+id/view_regs"
+        android:title="View Registrations" />
+    <item
+        android:id="@+id/export_regs"
+        android:title="Export All Data" />
+
+</menu>
