@@ -1,12 +1,19 @@
 package com.alfoirazaballevy.dntoiprecorder;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
+import android.Manifest;
 import android.app.job.JobInfo;
 import android.app.job.JobScheduler;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.ContextWrapper;
+import android.content.DialogInterface;
 import android.content.ServiceConnection;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
@@ -25,6 +32,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -102,6 +110,9 @@ public class MainActivity extends AppCompatActivity {
             case R.id.run_and_schedule_1hour:
                 checkAvailScheduleAndRunJob(60);
                 return true;
+            case R.id.run_and_schedule_6hours:
+                checkAvailScheduleAndRunJob(360);
+                return true;
             case R.id.run_and_schedule_12hours:
                 checkAvailScheduleAndRunJob(720);
                 return true;
@@ -160,11 +171,73 @@ public class MainActivity extends AppCompatActivity {
     };
 
     private void manageInit() {
+        checkAndAssertPermissions(Manifest.permission.RECEIVE_BOOT_COMPLETED);
+        checkAndAssertPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        checkAndAssertPermissions(Manifest.permission.INTERNET);
         FOLDER_WRITABLE_ANDROID_DATA = new ContextWrapper(
                 getApplicationContext()
         ).getExternalFilesDir("domainsData");
         NotificationsHandler notifsHandler = new NotificationsHandler(getApplicationContext());
         notifsHandler.createChannels();
+    }
+
+    private void checkAndAssertPermissions(final String permission) {
+        final Context thisContext = this;
+        if(ContextCompat.checkSelfPermission(this, permission)
+                != PackageManager.PERMISSION_GRANTED) {
+            if(ActivityCompat.shouldShowRequestPermissionRationale(this, permission)) {
+                System.out.println("CAN'T REQUEST PERMISSION " + permission + " AUTOMATICALLY!");
+                new AlertDialog.Builder(MainActivity.this)
+                        .setMessage("You need to enable the permission: " + permission)
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                Toast.makeText(
+                                        thisContext,
+                                        "Permission: '" + permission + "' has been enabled!",
+                                        Toast.LENGTH_LONG
+                                ).show();
+                            }
+                        })
+                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                // Message is shown later...
+                            }
+                        })
+                        .create()
+                        .show();
+            }else{
+                System.out.println("WILL REQUEST: " + permission + " AUTOMATICALLY!");
+                ActivityCompat.requestPermissions(
+                        this,
+                        new String[]{permission}, 1
+                );
+            }
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+       String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            case 1: {
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    System.out.println("Permissions " + Arrays.toString(permissions) + " granted!");
+                    //OK
+                } else {
+                    Toast.makeText(
+                            this,
+                            "There will be a problem with the background services! " +
+                                    "Please enable autostart and unlimited battery usage " +
+                                    "in your phone next time.",
+                            Toast.LENGTH_LONG
+                    );
+                }
+                return;
+            }
+        }
     }
 
     public void checkAvailScheduleAndRunJob(int minutesScheduledFor) {

@@ -16,6 +16,9 @@
                 android:id="@+id/run_and_schedule_1hour"
                 android:title="Run and Schedule for every 1 hour" />
             <item
+                android:id="@+id/run_and_schedule_6hours"
+                android:title="Run and Schedule for every 6 hours" />
+            <item
                 android:id="@+id/run_and_schedule_12hours"
                 android:title="Run and Schedule for every 12 hours" />
             <item
