@@ -171,50 +171,11 @@ public class MainActivity extends AppCompatActivity {
     };
 
     private void manageInit() {
-        checkAndAssertPermissions(Manifest.permission.RECEIVE_BOOT_COMPLETED);
-        checkAndAssertPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE);
-        checkAndAssertPermissions(Manifest.permission.INTERNET);
         FOLDER_WRITABLE_ANDROID_DATA = new ContextWrapper(
                 getApplicationContext()
         ).getExternalFilesDir("domainsData");
         NotificationsHandler notifsHandler = new NotificationsHandler(getApplicationContext());
         notifsHandler.createChannels();
-    }
-
-    private void checkAndAssertPermissions(final String permission) {
-        final Context thisContext = this;
-        if(ContextCompat.checkSelfPermission(this, permission)
-                != PackageManager.PERMISSION_GRANTED) {
-            if(ActivityCompat.shouldShowRequestPermissionRationale(this, permission)) {
-                System.out.println("CAN'T REQUEST PERMISSION " + permission + " AUTOMATICALLY!");
-                new AlertDialog.Builder(MainActivity.this)
-                        .setMessage("You need to enable the permission: " + permission)
-                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                Toast.makeText(
-                                        thisContext,
-                                        "Permission: '" + permission + "' has been enabled!",
-                                        Toast.LENGTH_LONG
-                                ).show();
-                            }
-                        })
-                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                // Message is shown later...
-                            }
-                        })
-                        .create()
-                        .show();
-            }else{
-                System.out.println("WILL REQUEST: " + permission + " AUTOMATICALLY!");
-                ActivityCompat.requestPermissions(
-                        this,
-                        new String[]{permission}, 1
-                );
-            }
-        }
     }
 
     @Override
