@@ -7,12 +7,14 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import com.alfoirazaballevy.dntoiprecorder.DomainNamesListActivity;
 import com.alfoirazaballevy.dntoiprecorder.domain.FullServerData;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 
 public class DBHelper extends SQLiteOpenHelper {
 
@@ -156,7 +158,7 @@ public class DBHelper extends SQLiteOpenHelper {
         return fullServerData;
     }
 
-    public HashMap<String, Integer> getListOfDNsAndTimesRequested() {
+    public ArrayList<DomainNamesListActivity.DomainNamesAndAppearances> getListOfDNsAndTimesRequested() {
         db = this.getReadableDatabase();
         String[] columns = new String[]{
                 TABLE_REGS_DOMAIN
@@ -176,7 +178,20 @@ public class DBHelper extends SQLiteOpenHelper {
             }
         }
 
-        return  dnsAndTimesRequested;
+        ArrayList<DomainNamesListActivity.DomainNamesAndAppearances> domainNamesAndAppearances =
+                new ArrayList<>();
+
+        Iterator<String> itDNSs =
+                dnsAndTimesRequested.keySet().iterator();
+        while(itDNSs.hasNext()) {
+            String domainName = itDNSs.next();
+            int appearances = dnsAndTimesRequested.get(domainName);
+            domainNamesAndAppearances.add(
+                    new DomainNamesListActivity.DomainNamesAndAppearances(domainName, appearances)
+            );
+        }
+
+        return domainNamesAndAppearances;
     }
 
     //Get Insertion String

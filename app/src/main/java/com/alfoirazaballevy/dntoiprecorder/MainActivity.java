@@ -12,6 +12,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -26,6 +27,7 @@ import android.widget.Toast;
 import com.alfoirazaballevy.dntoiprecorder.Helpers.DataExporter;
 import com.alfoirazaballevy.dntoiprecorder.Helpers.NotificationsHandler;
 import com.alfoirazaballevy.dntoiprecorder.Helpers.SDGSJobService;
+import com.alfoirazaballevy.dntoiprecorder.listHelpers.DomainNamesListAdapter;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -127,7 +129,10 @@ public class MainActivity extends AppCompatActivity {
                         Toast.LENGTH_LONG
                 ).show();
             case R.id.view_regs:
-
+                Intent intent = new Intent(
+                        MainActivity.this, DomainNamesListActivity.class
+                );
+                startActivity(intent);
                 return true;
             case R.id.export_regs:
                 try{
